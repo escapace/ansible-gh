@@ -1,0 +1,18 @@
+---
+dependencies: []
+galaxy_info:
+  author: escapace
+  description: gh role
+  issue_tracker_url: https://github.com/escapace/ansible-gh/issues
+  license: Apache-2.0
+  min_ansible_version: '2.13'
+  platforms:
+    - name: EL
+      versions:
+        - '9'
+
+  galaxy_tags:
+    - escapace
+    - gh
+
+  role_name: gh

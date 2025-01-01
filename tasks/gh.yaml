@@ -1,0 +1,66 @@
+---
+- name: create gh directories
+  ansible.builtin.file:
+    owner: root
+    group: root
+    path: '{{ item }}'
+    state: directory
+    mode: '0755'
+  with_items:
+    - /opt/gh
+    # - /opt/gh/bin
+
+- name: check gh version
+  ansible.builtin.slurp:
+    src: /opt/gh/version
+  register: gh_current_vesion
+  changed_when: false
+  ignore_errors: true
+
+- name: install gh
+  when: gh_current_vesion.failed or gh_current_vesion['content'] | b64decode != gh_archive
+  block:
+    - name: download gh
+      ansible.builtin.get_url:
+        url: '{{ gh_url_archive }}'
+        dest: /tmp/{{ gh_archive }}
+        checksum: sha256:{{ gh_url_archive_checksum }}
+        mode: '0755'
+        owner: root
+        group: root
+
+    - name: extract gh
+      ansible.builtin.unarchive:
+        src: /tmp/{{ gh_archive }}
+        dest: /opt/gh
+        mode: '0755'
+        owner: root
+        group: root
+        setype: bin_t
+        seuser: system_u
+        remote_src: true
+        extra_opts: [--strip-components=1]
+
+    - name: cleanup
+      ansible.builtin.file:
+        path: /tmp/{{ gh_archive }}
+        state: absent
+
+    - name: delete /opt/gh/bin/systemd
+      ansible.builtin.file:
+        path: /opt/gh/share
+        state: absent
+
+    - name: write version
+      ansible.builtin.copy:
+        content: '{{ gh_archive }}'
+        dest: /opt/gh/version
+        owner: root
+        group: root
+        mode: '0644'
+
+- name: link /opt/gh/bin/gh to /usr/bin/gh
+  ansible.builtin.file:
+    src: /opt/gh/bin/gh
+    dest: /usr/bin/gh
+    state: link

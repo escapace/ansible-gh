@@ -1,0 +1,5 @@
+---
+# defaults file for escapace.gh
+
+gh_version: 2.64.0
+gh_role_debug: false

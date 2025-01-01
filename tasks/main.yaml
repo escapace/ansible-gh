@@ -1,0 +1,5 @@
+---
+- ansible.builtin.include_tasks: gh.yaml
+  when: ansible_os_family == "RedHat"
+  tags:
+    - run-gh
