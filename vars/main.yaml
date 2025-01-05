@@ -7,7 +7,7 @@ gh_architecture_map:
   aarch64: arm64
   64-bit: amd64
 
-gh_architecture: '{{ gh_architecture_map[ansible_architecture] }}'
-gh_archive: 'gh_{{ gh_version }}_linux_{{ gh_architecture }}.tar.gz'
-gh_url_archive: 'https://github.com/cli/cli/releases/download/v{{ gh_version }}/{{ gh_archive }}'
-gh_url_archive_checksum: 'https://github.com/cli/cli/releases/download/v{{ gh_version }}/gh_{{ gh_version }}_checksums.txt'
+gh_architecture: "{{ gh_architecture_map[ansible_architecture] }}"
+gh_archive: "gh_{{ gh_version }}_linux_{{ gh_architecture }}.tar.gz"
+gh_url_archive: "https://github.com/cli/cli/releases/download/v{{ gh_version }}/{{ gh_archive }}"
+gh_url_archive_checksum: "https://github.com/cli/cli/releases/download/v{{ gh_version }}/gh_{{ gh_version }}_checksums.txt"
