@@ -10,15 +10,21 @@
     - /opt/gh
     # - /opt/gh/bin
 
-- name: check gh version
+- name: inspect the installed gh version file
+  ansible.builtin.stat:
+    path: /opt/gh/version
+  register: gh_version_file
+
+- name: read the installed gh version
   ansible.builtin.slurp:
     src: /opt/gh/version
-  register: gh_current_vesion
-  changed_when: false
-  ignore_errors: true
+  when: gh_version_file.stat.isreg | default(false)
+  register: gh_current_version
 
 - name: install gh
-  when: gh_current_vesion.failed or gh_current_vesion['content'] | b64decode != gh_archive
+  when: >-
+    not (gh_version_file.stat.isreg | default(false)) or
+    (gh_current_version.content | default('') | b64decode) != gh_archive
   block:
     - name: download gh
       ansible.builtin.get_url:
